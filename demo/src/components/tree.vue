@@ -217,7 +217,9 @@
       */
       expandNode (node) {
         this.$set(node, 'expanded', !node.expanded);
-        if (node.async && !node.children) {
+        if (node.async && !node.children && !node.alreadyAsync) {
+          // 用 alreadyAsync 解决重复 async 的问题
+          this.$set(node, 'alreadyAsync', true);
           this.$emit('async-load-nodes', node);
         }
       },
@@ -256,17 +258,22 @@
         }
         if (parent === null) { // 支持根节点
           newNode.parent = undefined;
-          newNode.children = [];
+          // newNode.children = [];
           this.data.push(newNode);
           return;
         }
         this.$set(parent, 'expanded', true);
-        if (this.isLeaf(parent)) {
+        // if (this.isLeaf(parent)) { // 这个有问题
+        //   this.$set(parent, 'children', []);
+        //   parent.children.push(addnode);
+        // } else {
+        //   if(!parent.children){}
+        //   parent.children.push(addnode);
+        // }
+        if (!parent.children) {
           this.$set(parent, 'children', []);
-          parent.children.push(addnode);
-        } else {
-          parent.children.push(addnode);
         }
+        parent.children.push(addnode);
         this.$emit('addNode', {parentNode: parent, newNode: newNode});
       },
       /* @method adding childlren nodes
