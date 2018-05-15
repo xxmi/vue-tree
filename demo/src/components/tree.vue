@@ -254,7 +254,7 @@
         if (typeof newNode === 'object' && newNode.hasOwnProperty('title')) {
           addnode = newNode;
         }
-        if (parent === null) { // 支持根目录
+        if (parent === null) { // 支持根节点
           newNode.parent = undefined;
           newNode.children = [];
           this.data.push(newNode);
